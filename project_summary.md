@@ -1,31 +1,34 @@
 # Figure Ride
-Create butifull imagiry by drawing figures.
+Create beautiful imagery by drawing figures.
 
 ## Authors
-- Victor Häggqvist, victorhaggqvist
+- Victor Häggqvist, [@victorhaggqvist](https://twitter.com/victorhggqvst), https://github.com/victorhaggqvist
 
 ## Description
-Insert a description containing about 100 to 150 words, including your motivation and the meaning behind your idea and execution. The Judges will be keen to know how your idea pushes the boundaries of code and technology. 
+First time ever I've been exploring the HTML5 Canvas element and it's posibilities. Just playing
+around to see what happened.
 
 ## Link to Prototype
-NOTE: If your project lives online you can add one or more links here. Make sure you have a stable version of your project running before linking it.
-
-[Example Link](http://www.google.com "Example Link")
+http://apps.snilius.com/devart
 
 ## Example Code
-NOTE: Wrap your code blocks or any code citation by using ``` like the example below.
-```
-function test() {
-  console.log("Printing a test");
+```js
+function makeRect(context,x,y,color) {
+  var s = 20;
+  context.beginPath();
+  context.moveTo(x,y);
+  context.lineTo(x,y+s);
+  context.lineTo(x+s,y+s);
+  context.lineTo(x+s,y);
+  context.lineTo(x,y);
+  context.closePath();
+  context.strokeStyle = color;
+  context.stroke();
 }
 ```
 ## Links to External Libraries
-- Sass-Bootstrap
- NOTE: You can also use this space to link to external libraries or Github repositories you used on your project.
-
-[Example Link](http://www.google.com "Example Link")
+- Sass-Bootstrap, https://github.com/twbs/bootstrap-sass
+- Font Awesome, https://github.com/FortAwesome/Font-Awesome
 
 ## Images & Videos
-NOTE: For additional images you can either use a relative link to an image on this repo or an absolute link to an externally hosted image.
-
 ![Example Image](project_images/cover.jpg?raw=true "Example Image")
