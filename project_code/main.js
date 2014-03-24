@@ -4,17 +4,75 @@ var base = document.getElementById("base");
 var context = base.getContext("2d");
 
 var rideY, rideX;
-var timeBetweenDraws = 200, timeLock;
+var timeBetweenDraws = 100, timeLock, shapeSize = 20, replayString='';
+var apikey = "482eb53700e867a37c1ed9ee47b75882";
 
 window.addEventListener( "keypress", makeStuffHappen, false );
 
 context.canvas.width  = window.innerWidth-4;
-context.canvas.height = window.innerHeight-4;
+context.canvas.height = window.innerHeight-4-51;
 
 document.addEventListener("DOMContentLoaded", function (){
   rideX = Math.floor(Math.random() * ((context.canvas.width - 40) - (40) + 1)) + 40;
   rideY = Math.floor(Math.random() * ((context.canvas.height - 40) - (40) + 1)) + 40;
 });
+
+document.getElementById("tweet").onclick = function (){
+  // var img = base.toDataURL("image/png");
+
+  var xhr = new XMLHttpRequest(), postData, shortLink;
+
+  xhr.open("POST", "https://www.googleapis.com/urlshortener/v1/url", true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState !== 4 || xhr.status !== 200)
+      return;
+
+    shortLink = JSON.parse(xhr.responseText).id;
+    console.log(shortLink);
+    // document.getElementById("tweet").setAttribute("target","_blank");
+    // document.getElementById("tweet").setAttribute("href","https://twitter.com/intent/tweet?hashtags=DevArt,FigureRide&text=Checkout%20my%20awesome%20art%20"+shortLink);
+
+    window.open("https://twitter.com/intent/tweet?hashtags=DevArt,FigureRide&text=Checkout%20my%20awesome%20figure%20art!%20"+shortLink, 'Tweet Art','left=20,top=20,width=500,height=500,toolbar=0,resizable=0');
+  };
+
+  xhr.setRequestHeader("Content-type","application/json");
+
+  // Chop a trailing # off
+  var shl = window.location.href;
+  if (shl.substring(shl.length - 1, shl.length) === '#') {
+    var tempp = shl.substring(0, shl.length - 1);
+    postData = {"longUrl": tempp+"#"+replayString};
+  } else {
+    postData = {"longUrl": window.location+"#"+replayString};
+  }
+  xhr.send(JSON.stringify(postData));
+
+  // console.log(replayString);
+  // if (replayString.length>0){
+  // var sharelink = window.location+"#"+replayString;
+
+    // return true;
+  // }
+  // window.location = window.location+"#"+replayString;
+  // var r = new XMLHttpRequest();
+  // r.open("POST", "https://api.imgur.com/3/image", true);
+  // r.onreadystatechange = function () {
+  //   if (r.readyState != 4 || r.status != 200) return;
+  //   alert("Success: " + r.responseText);
+  // };
+  // r.send("banana=yellow");
+  // $.ajax({
+  //     url: 'https://api.imgur.com/3/image',
+  //     headers: {
+  //         'Authorization': 'Client-ID YOUR_CLIENT_ID'
+  //     },
+  //     type: 'POST',
+  //     data: {
+  //         'image': 'helloworld.jpg'
+  //     },
+  //     success: function() { console.log('cool'); }
+  // });
+};
 
 function lockTime(){
   timeLock = true;
@@ -32,27 +90,34 @@ function makeStuffHappen (e) {
   lockTime();
 
   var jumpSize = 30;
+  var rideMove = false;
   // a
-  if ( e.keyCode == 87 || e.keyCode === 97) {
-    if (rideX >=0) { rideX -= jumpSize;}
+  if (e.keyCode === 97) {
+    if ((rideX-jumpSize) >=0 ) { rideX -= jumpSize; rideMove = true;}
   }
 
   // s
-  if ( e.keyCode == 83 || e.keyCode === 115) {
-    if (rideY <= base.height) { rideY += jumpSize;}
+  if (e.keyCode === 115) {
+    if ((rideY+jumpSize+shapeSize) <= base.height) { rideY += jumpSize; rideMove = true;}
   }
 
   // d
-  if ( e.keyCode == 65 || e.keyCode === 100) {
-    if (rideX <= base.width) { rideX += jumpSize;}
+  if (e.keyCode === 100) {
+    if ((rideX+jumpSize+shapeSize) <= base.width) { rideX += jumpSize; rideMove = true;}
   }
 
   // w
-  if ( e.keyCode == 68 || e.keyCode === 119) {
-    if (rideY >= 0) { rideY -= jumpSize;}
+  if (e.keyCode === 119) {
+    if ((rideY-jumpSize) >= 0) { rideY -= jumpSize; rideMove = true;}
   }
 
-  drawRide(rideX,rideY);
+  if (rideMove)
+    drawRide(rideX,rideY);
+
+  // r
+  if ( e.keyCode === 114){
+    clearCanvas();
+  }
 }
 
 function makeRect(context,x,y,color) {
@@ -85,7 +150,6 @@ function makeTriangle(context,x,y,color) {
 function makeCircle(context,x,y,color) {
   var s = 10;
   context.beginPath();
-  // context.arc(x, y, s, 0, Math.PI * 2, false);
   context.arc((x+s),(y+s),s,0,2*Math.PI);
   context.closePath();
   context.strokeStyle = color;
@@ -96,24 +160,60 @@ function drawRide(x,y) {
   var fig = Math.floor(Math.random() * (2 - 0 + 1)) + 0;
   var figColor = Math.floor(Math.random() * (colors.length - 0 + 1)) + 0;
 
-  if (fig===0) {
+  if (fig === 0) {
     makeCircle(context,x,y,colors[figColor]);
+    replayString += fig+':'+x+':'+y+':'+figColor+';';
   }
 
   if (fig === 1) {
     makeRect(context,x,y,colors[figColor]);
+    replayString += fig+':'+x+':'+y+':'+figColor+';';
   }
 
   if (fig === 2) {
     makeTriangle(context,x,y,colors[figColor]);
+    replayString += fig+':'+x+':'+y+':'+figColor+';';
   }
 }
 
 function clearCanvas() {
   base.width = base.width;
+  context.fillRect(0, 0, base.width, base.height);
 }
 
-context.fillRect(0, 0, base.width, base.height);
+var parts ='';
+function replayArt (arg) {
+  console.log('replaying');
+  parts = arg.split(';');
+  clearCanvas();
+  paintReplay();
+}
+
+function paintReplay() {
+  var pony = parts.shift().split(':');
+  // console.log(pony);
+  if (pony[0] === '0') {
+    makeCircle(context,parseInt(pony[1]),parseInt(pony[2]),colors[pony[3]]);
+  }
+
+  if (pony[0] === '1') {
+    makeRect(context,parseInt(pony[1]),parseInt(pony[2]),colors[pony[3]]);
+  }
+
+  if (pony[0] === '2') {
+    makeTriangle(context,parseInt(pony[1]),parseInt(pony[2]),colors[pony[3]]);
+  }
+  if (parts.length>0)
+    setTimeout(paintReplay,timeBetweenDraws);
+}
+
+clearCanvas();
+console.log(window.location.hash);
+if (window.location.hash.split('#')[1]){
+  console.log('incomming: '+window.location.hash.split('#')[1]);
+  replayArt(window.location.hash.split('#')[1]);
+}
+
 // makeRect(context,40,40,color);
 
 for (var i = colors.length - 1; i >= 0; i--) {
