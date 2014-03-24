@@ -1,13 +1,13 @@
 {
     "technologies": {
         "apis": [
-
+            "goo.gl"
         ],
         "platforms": [
             "linux","windows","android","webkit"
         ],
         "toolkits": [
-
+            "js"
         ]
     },
     "themes": [
