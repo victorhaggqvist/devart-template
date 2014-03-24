@@ -23,11 +23,11 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        banner: '<%= banner %>'
+        // banner: '<%= banner %>'
       },
       dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
+        src: 'main.js',
+        dest: 'main.min.js'
       }
     },
     jshint: {
@@ -49,8 +49,8 @@ module.exports = function(grunt) {
       gruntfile: {
         src: 'Gruntfile.js'
       },
-      lib_test: {
-        src: ['*.js']
+      dev: {
+        src: 'main.js'
       }
     },
     watch: {
@@ -58,13 +58,9 @@ module.exports = function(grunt) {
         files: '<%= jshint.gruntfile.src %>',
         tasks: ['jshint:gruntfile']
       },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'qunit']
-      },
       woop:{
         options: { livereload:true },
-        tasks: ['jshint','sass:dev'],
+        tasks: ['jshint:dev','sass'],
         files: ['index.html','main.js','main.scss']
       }
     },
