@@ -4,7 +4,7 @@
             "goo.gl"
         ],
         "platforms": [
-            "linux","windows","android","webkit"
+            "linux","windows","osx"
         ],
         "toolkits": [
             "js"
